@@ -1,0 +1,19 @@
+{
+  "name": "drizzle-playground",
+  "version": "1.0.0",
+  "description": "Project to play around and get familiar with drizzle orm",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon src/index.ts",
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.11.14",
+    "nodemon": "^3.0.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  }
+}
