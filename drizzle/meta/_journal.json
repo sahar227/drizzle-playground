@@ -15,6 +15,13 @@
       "when": 1706940547316,
       "tag": "0001_brief_lake",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1706944197081,
+      "tag": "0002_thin_rhodey",
+      "breakpoints": true
     }
   ]
 }
