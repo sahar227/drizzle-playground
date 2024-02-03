@@ -1,8 +1,10 @@
 import {
+  bigserial,
   integer,
   pgEnum,
   pgTable,
   serial,
+  unique,
   uniqueIndex,
   varchar,
 } from "drizzle-orm/pg-core";
@@ -33,3 +35,16 @@ export const cities = pgTable("cities", {
   countryId: integer("country_id").references(() => countries.id),
   popularity: popularityEnum("popularity"),
 });
+
+export const lessons = pgTable(
+  "lessons",
+  {
+    id: bigserial("id", { mode: "bigint" }).primaryKey(),
+    name: varchar("name", { length: 255 }).notNull(),
+    description: varchar("description", { length: undefined }).notNull(),
+    maxStudents: integer("max_students").notNull(),
+  },
+  (lessons) => ({
+    uniqueName: unique("name_unique").on(lessons.name),
+  })
+);
