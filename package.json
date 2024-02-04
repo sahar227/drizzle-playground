@@ -8,7 +8,7 @@
     "build": "tsc",
     "test": "jest ./src --watch",
     "migration:generate": "drizzle-kit generate:pg",
-    "migration:run": "ts-node src/db/migrate.ts",
+    "migration:run": "ts-node src/db/migrateScript.ts",
     "migration:drop": "drizzle-kit drop",
     "db:view": "drizzle-kit studio"
   },
