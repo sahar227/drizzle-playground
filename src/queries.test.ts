@@ -3,9 +3,8 @@ import {
   StartedPostgreSqlContainer,
 } from "@testcontainers/postgresql";
 import { migrateDB } from "./db/migrateDB";
-import { getAllLessons } from "./queries";
-import { connect, db } from "./db";
-import { lessons, teachers } from "./db/schema";
+import { createLesson, createTeacher, getAllLessons } from "./queries";
+import { connect } from "./db";
 
 let container: StartedPostgreSqlContainer;
 
@@ -26,19 +25,15 @@ describe("my drizzle queires", () => {
   });
 
   it("returns a lesson from the db", async () => {
-    const teacherIds = await db()
-      .insert(teachers)
-      .values({ name: "Sahar" })
-      .returning({ id: teachers.id });
-    await db()
-      .insert(lessons)
-      .values({
-        description: "",
-        name: "",
-        teacherId: teacherIds[0].id,
-        maxStudents: 0,
-      })
-      .returning();
+    const teacherIds = await createTeacher({ name: "Sahar" });
+    const newLesson = {
+      description: "",
+      name: "Math",
+      teacherId: teacherIds[0].id,
+      maxStudents: 0,
+    };
+    await createLesson(newLesson);
+
     const allLessons = await getAllLessons();
     expect(allLessons.length).toBe(1);
   });
