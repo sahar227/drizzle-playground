@@ -10,6 +10,7 @@
     "migration:generate": "drizzle-kit generate:pg",
     "migration:run": "ts-node src/db/migrateScript.ts",
     "migration:drop": "drizzle-kit drop",
+    "db:seed": "ts-node src/db/seedScript.ts",
     "db:view": "drizzle-kit studio"
   },
   "keywords": [],
