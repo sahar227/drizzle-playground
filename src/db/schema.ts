@@ -1,3 +1,4 @@
+import { relations } from "drizzle-orm";
 import {
   bigint,
   bigserial,
@@ -57,3 +58,14 @@ export const lessons = pgTable(
     uniqueName: unique("name_unique").on(lessons.name),
   })
 );
+
+export const teacherRelations = relations(teachers, ({ many }) => ({
+  lessons: many(lessons),
+}));
+
+export const lessonsRealtions = relations(lessons, ({ one }) => ({
+  teacher: one(teachers, {
+    fields: [lessons.teacherId],
+    references: [teachers.id],
+  }),
+}));
