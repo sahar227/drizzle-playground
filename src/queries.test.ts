@@ -3,7 +3,12 @@ import {
   StartedPostgreSqlContainer,
 } from "@testcontainers/postgresql";
 import { migrateDB } from "./db/migrateDB";
-import { createLesson, createTeacher, getAllLessons } from "./queries";
+import {
+  createLesson,
+  createTeacher,
+  getAllLessons,
+  getAllLessons2,
+} from "./queries";
 import { connect } from "./db";
 
 let container: StartedPostgreSqlContainer;
@@ -40,6 +45,11 @@ describe("my drizzle queires", () => {
 
   it("No lessons if nothing inserted", async () => {
     const lessons = await getAllLessons();
+    expect(lessons.length).toBe(0);
+  });
+
+  it("No lessons if nothing inserted (query version)", async () => {
+    const lessons = await getAllLessons2();
     expect(lessons.length).toBe(0);
   });
 });

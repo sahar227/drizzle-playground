@@ -1,12 +1,12 @@
 import { PostgresJsDatabase, drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
-import { teachers } from "./schema";
+import * as schema from "./schema";
 
-let _db: PostgresJsDatabase<Record<string, never>>;
+let _db: PostgresJsDatabase<typeof schema>;
+
 export function connect(connectionString: string) {
-  if (!!_db) return;
   const queryClient = postgres(connectionString);
-  _db = drizzle(queryClient);
+  _db = drizzle(queryClient, { schema });
 }
 
 export function db() {
@@ -16,5 +16,7 @@ export function db() {
 
 export async function seed(connectionString: string) {
   connect(connectionString);
-  await _db.insert(teachers).values([{ name: "Sahar" }, { name: "Luna" }]);
+  await _db
+    .insert(schema.teachers)
+    .values([{ name: "Sahar" }, { name: "Luna" }]);
 }

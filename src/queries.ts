@@ -6,6 +6,11 @@ export async function getAllLessons() {
   return allLessons;
 }
 
+export async function getAllLessons2() {
+  const allLessons = await db().query.lessons.findMany();
+  return allLessons;
+}
+
 type InsertTeacher = typeof teachers.$inferInsert;
 
 export async function createTeacher(teacher: InsertTeacher) {
