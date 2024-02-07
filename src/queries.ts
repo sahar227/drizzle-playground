@@ -15,10 +15,9 @@ export async function getAllLessons2() {
 type InsertTeacher = typeof teachers.$inferInsert;
 
 export async function createTeacher(teacher: InsertTeacher) {
-  return await db()
-    .insert(teachers)
-    .values(teacher)
-    .returning({ id: teachers.id });
+  return (
+    await db().insert(teachers).values(teacher).returning({ id: teachers.id })
+  )?.at(0);
 }
 
 type InsertLesson = typeof lessons.$inferInsert;
@@ -35,4 +34,12 @@ export async function getTeacherAndLessons(teacherId: bigint) {
     where: eq(teachers.id, teacherId),
     with: { lessons: true },
   });
+}
+
+export async function getTeacherAndLessonsWithJoins(teacherId: bigint) {
+  return await db()
+    .select()
+    .from(teachers)
+    .innerJoin(lessons, eq(teachers.id, lessons.teacherId))
+    .where(eq(teachers.id, teacherId));
 }
