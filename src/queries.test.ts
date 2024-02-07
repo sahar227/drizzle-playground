@@ -8,6 +8,7 @@ import {
   createTeacher,
   getAllLessons,
   getAllLessons2,
+  getTeacherAndLessons,
 } from "./queries";
 import { connect } from "./db";
 
@@ -51,5 +52,34 @@ describe("my drizzle queires", () => {
   it("No lessons if nothing inserted (query version)", async () => {
     const lessons = await getAllLessons2();
     expect(lessons.length).toBe(0);
+  });
+
+  it("Returns teacher with all of their lessons", async () => {
+    const [teacher] = await createTeacher({ name: "Sahar" });
+    await createLesson({
+      name: "Math",
+      teacherId: teacher.id,
+      description: "",
+      maxStudents: 5,
+    });
+    await createLesson({
+      name: "English",
+      teacherId: teacher.id,
+      description: "",
+      maxStudents: 5,
+    });
+
+    const teacherWithLessons = await getTeacherAndLessons(teacher.id);
+
+    expect(teacherWithLessons?.id).toBe(teacher.id);
+    expect(teacherWithLessons?.lessons.length).toBe(2);
+    const mathLesson = teacherWithLessons?.lessons.find(
+      (v) => v.name === "Math"
+    );
+    expect(mathLesson).toBeTruthy();
+    const englishLesson = teacherWithLessons?.lessons.find(
+      (v) => v.name === "English"
+    );
+    expect(englishLesson).toBeTruthy();
   });
 });

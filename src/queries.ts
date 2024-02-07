@@ -1,3 +1,4 @@
+import { eq } from "drizzle-orm";
 import { db } from "./db";
 import { lessons, teachers } from "./db/schema";
 
@@ -27,4 +28,11 @@ export async function createLesson(lesson: InsertLesson) {
     .insert(lessons)
     .values(lesson)
     .returning({ id: lessons.id });
+}
+
+export async function getTeacherAndLessons(teacherId: bigint) {
+  return await db().query.teachers.findFirst({
+    where: eq(teachers.id, teacherId),
+    with: { lessons: true },
+  });
 }
