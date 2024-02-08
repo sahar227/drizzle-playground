@@ -2,10 +2,12 @@ import { relations } from "drizzle-orm";
 import {
   bigint,
   bigserial,
+  date,
   integer,
   pgEnum,
   pgTable,
   serial,
+  timestamp,
   unique,
   uniqueIndex,
   varchar,
@@ -69,3 +71,10 @@ export const lessonsRealtions = relations(lessons, ({ one }) => ({
     references: [teachers.id],
   }),
 }));
+
+export const posts = pgTable("posts", {
+  id: serial("id").primaryKey(),
+  title: varchar("title", { length: 255 }),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+  createdAtDate: date("created_at_date").defaultNow(),
+});
