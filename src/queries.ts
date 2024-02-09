@@ -77,7 +77,7 @@ export async function connectPostAndCategory(
   await db().insert(postsOnCategories).values({ categoryId, postId });
 }
 
-export async function getPosts() {
+export async function getPostsWithCategories() {
   const posts = await db().query.posts.findMany({
     with: {
       categories: {

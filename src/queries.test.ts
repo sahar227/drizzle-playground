@@ -4,10 +4,14 @@ import {
 } from "@testcontainers/postgresql";
 import { migrateDB } from "./db/migrateDB";
 import {
+  connectPostAndCategory,
+  createCategory,
   createLesson,
+  createPost,
   createTeacher,
   getAllLessons,
   getAllLessons2,
+  getPostsWithCategories,
   getTeacherAndLessons,
   getTeacherAndLessonsWithJoins,
 } from "./queries";
@@ -123,5 +127,25 @@ describe("my drizzle queires", () => {
     expect(englishRow?.teachers.id).toBe(teacher.id);
     const mathRow = teacherWithLessons.find((v) => v.lessons.name === "Math");
     expect(mathRow?.teachers.id).toBe(teacher.id);
+  });
+
+  it("many to many relations get created and queried", async () => {
+    const postId = await createPost({ title: "test" });
+    const post2Id = await createPost({ title: "test2" });
+
+    const categoryId = await createCategory({ name: "category" });
+    const category2Id = await createCategory({ name: "category2" });
+
+    await connectPostAndCategory(postId, categoryId);
+    await connectPostAndCategory(post2Id, categoryId);
+    await connectPostAndCategory(postId, category2Id);
+    await connectPostAndCategory(post2Id, category2Id);
+
+    const posts = await getPostsWithCategories();
+
+    expect(posts.length).toBe(2);
+    const [actualPost1, actualPost2] = posts;
+    expect(actualPost1.categories.length).toBe(2);
+    expect(actualPost2.categories.length).toBe(2);
   });
 });
