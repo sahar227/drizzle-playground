@@ -6,6 +6,7 @@ import {
   integer,
   pgEnum,
   pgTable,
+  primaryKey,
   serial,
   timestamp,
   unique,
@@ -75,6 +76,48 @@ export const lessonsRealtions = relations(lessons, ({ one }) => ({
 export const posts = pgTable("posts", {
   id: serial("id").primaryKey(),
   title: varchar("title", { length: 255 }),
-  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+  createdAt: timestamp("created_at", { withTimezone: false }).defaultNow(),
   createdAtDate: date("created_at_date").defaultNow(),
 });
+
+export const postsRelations = relations(posts, ({ many }) => ({
+  categories: many(postsOnCategories),
+}));
+
+export const categories = pgTable("categoris", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 255 }).notNull(),
+});
+
+export const categoriesRelations = relations(categories, ({ many }) => ({
+  posts: many(postsOnCategories),
+}));
+
+export const postsOnCategories = pgTable(
+  "postCategories",
+  {
+    postId: integer("post_id")
+      .notNull()
+      .references(() => posts.id),
+    categoryId: integer("category_id")
+      .notNull()
+      .references(() => categories.id),
+  },
+  (t) => ({
+    pk: primaryKey({ columns: [t.postId, t.categoryId] }),
+  })
+);
+
+export const postsOnCategoriesRelations = relations(
+  postsOnCategories,
+  ({ one }) => ({
+    post: one(posts, {
+      fields: [postsOnCategories.postId],
+      references: [posts.id],
+    }),
+    category: one(categories, {
+      fields: [postsOnCategories.categoryId],
+      references: [categories.id],
+    }),
+  })
+);
