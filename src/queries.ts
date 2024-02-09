@@ -1,6 +1,12 @@
 import { eq } from "drizzle-orm";
 import { db } from "./db";
-import { lessons, teachers } from "./db/schema";
+import {
+  categories,
+  lessons,
+  posts,
+  postsOnCategories,
+  teachers,
+} from "./db/schema";
 
 export async function getAllLessons() {
   const allLessons = await db().select().from(lessons);
@@ -42,4 +48,44 @@ export async function getTeacherAndLessonsWithJoins(teacherId: bigint) {
     .from(teachers)
     .innerJoin(lessons, eq(teachers.id, lessons.teacherId))
     .where(eq(teachers.id, teacherId));
+}
+
+export async function createPost(post: typeof posts.$inferInsert) {
+  const newPost = (
+    await db().insert(posts).values(post).returning({ id: posts.id })
+  ).at(0);
+  if (!newPost) throw new Error("error!");
+  return newPost.id;
+}
+
+export async function createCategory(category: typeof categories.$inferInsert) {
+  const newCategory = (
+    await db()
+      .insert(categories)
+      .values(category)
+      .returning({ id: categories.id })
+  ).at(0);
+  if (!newCategory) throw new Error("error!");
+
+  return newCategory.id;
+}
+
+export async function connectPostAndCategory(
+  postId: number,
+  categoryId: number
+) {
+  await db().insert(postsOnCategories).values({ categoryId, postId });
+}
+
+export async function getPosts() {
+  const posts = await db().query.posts.findMany({
+    with: {
+      categories: {
+        columns: { categoryId: false, postId: false },
+        with: { category: true },
+      },
+    },
+  });
+
+  return posts;
 }
