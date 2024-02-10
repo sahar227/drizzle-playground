@@ -1,6 +1,10 @@
 import { config } from "dotenv";
 import { z } from "zod";
-if (process.env.NODE_ENV === "development") config();
+if (
+  process.env.NODE_ENV === "development" ||
+  process.env.NODE_ENV === undefined
+)
+  config();
 
 const environmentSchema = z.object({
   NODE_ENV: z.union([

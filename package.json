@@ -4,7 +4,7 @@
   "description": "Project to play around and get familiar with drizzle orm",
   "main": "index.js",
   "scripts": {
-    "start": "cross-env NODE_ENV=development nodemon src/index.ts",
+    "start": "nodemon src/index.ts",
     "build": "tsc",
     "test": "jest ./src --watch",
     "migration:generate": "drizzle-kit generate:pg",
